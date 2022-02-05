@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <title>Decay of Nuclei</title>
+    <link rel="icon" type="image/png" href="../images/Icon.png">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="main.js"></script>
+</head>
+
+<body>
+<div id="container">
+    <h1 id="title">Decay of Nuclei</h1>
+    <div id="first-line">
+        <div id="settings">
+            <div>
+                <label for="inputProbability">Probability of decay (1:x):</label>
+                <input type="number" id="inputProbability" value="6">
+            </div>
+            <div>
+                <label for="inputNucleusQuantity">Number of nucleus:</label>
+                <input type="number" id="inputNucleusQuantity" value="500" min="5">
+            </div>
+            <div>
+                <label for="inputRuns">Runs:</label>
+                <input type="number" id="inputRuns" value="100">
+            </div>
+            <div id="axis">
+                <div>
+                    <label for="inputX">Max x:</label>
+                    <input type="number" value="0" min="0" id="inputX">
+                </div>
+                <div>
+                    <label for="inputY">Max y:</label>
+                    <input type="number" value="0" min="0" id="inputY">
+                </div>
+            </div>
+            <div id="last">
+                <label for="inputPoint">Show points:</label>
+                <input type="checkbox" id="inputPoint" onclick="showPoints()">
+            </div>
+        </div>
+
+        <div>
+            <input type="button" id="calculate" value="Click to calculate">
+            <input type="button" id="stop" value="Hold to stop">
+            <div id="progress">
+                <label>Progress:</label>
+                <div id="bar">
+                    <div><p>0%</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="legend-container">
+        <ul></ul>
+    </div>
+    <div>
+        <canvas id="average-diagram" class="diagram"></canvas>
+    </div>
+</div>
+<script src="main.js"></script>
+</body>
+
+</html>
