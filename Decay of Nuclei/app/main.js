@@ -5,6 +5,8 @@ let chartUI
 let running = false
 let x = null
 let y = null
+let slowest
+let fastest
 
 function calculate() {
     if (running === true) {
@@ -38,7 +40,6 @@ function calculate() {
             progressBar.width(`${progress}%`)
             progressText.text(`${progress}%`)
 
-
             nucleusLeftArray.push([])
 
             let nucleusLeft = nucleusQuantity
@@ -62,7 +63,7 @@ function calculate() {
                 console.log(`Round ${round}: ${nucleusDecayed} (${nucleusLeft}) `)
                 if (nucleusLeft <= 0) {
                     nucleusLeftArray[run - 1].push({x: round, y: nucleusLeft})
-                    if (run < 10000) {
+                    if (run < 500) {
                         nucleusLeftDatasets.push({
                             label: run.toString(),
                             pointStyle: 'point',
@@ -92,8 +93,20 @@ function calculate() {
 
 function calculateAverageArray() {
     let totalArrayLength = 0
+    let slowestLength = nucleusLeftArray[0].length
+    let fastestLength = nucleusLeftArray[0].length
+    slowest = 1
+    fastest = 1
     for (let curArray in nucleusLeftArray) {
         totalArrayLength += nucleusLeftArray[curArray].length
+        if (nucleusLeftArray[curArray].length > slowestLength) {
+            slowestLength = nucleusLeftArray[curArray].length
+            slowest = parseInt(curArray) + 1
+        }
+        if (nucleusLeftArray[curArray].length < fastestLength) {
+            fastestLength = nucleusLeftArray[curArray].length
+            fastest = parseInt(curArray) + 1
+        }
     }
     let averageArrayLength = Math.round(totalArrayLength / nucleusLeftArray.length)
 
@@ -113,7 +126,7 @@ function calculateAverageArray() {
         nucleusLeftAverageArray[nucleusLeftAverageArray.length - 1].y = 0
 
     nucleusLeftDatasets.unshift({
-        label: "Average curve",
+        label: "Durchschnitts Kurve",
         hoverRadius: 5,
         pointStyle: 'rectRot',
         showLine: true,
@@ -127,10 +140,26 @@ function calculateAverageArray() {
 
 function showPoints() {
     if ($("#inputPoint").is(':checked')) {
-        for (const data of nucleusLeftDatasets) {
-            data.pointRadius = 2
+        for (const dataset of nucleusLeftDatasets) {
+            dataset.pointRadius = function (context) {
+                const index = context.dataIndex;
+                if (nucleusLeftAverageArray.length < 50 || index === dataset.data.length - 1)
+                    return 2
+                else if (nucleusLeftAverageArray.length < 100)
+                    return (index % 4) === 0 ? 2 : 0
+                else
+                    return 0
+            }
         }
-        nucleusLeftDatasets[0].pointRadius = 4
+        nucleusLeftDatasets[0].pointRadius = function (context) {
+            const index = context.dataIndex;
+            if (index === nucleusLeftAverageArray.length - 1)
+                return 3
+            else if (nucleusLeftAverageArray.length > 50)
+                return (index % Math.floor(nucleusLeftAverageArray.length / 25)) === 0 ? 3 : 0
+            else
+                return 4
+        }
     } else {
         for (const data of nucleusLeftDatasets) {
             data.pointRadius = 0
@@ -151,12 +180,32 @@ function showChart() {
             datasets: nucleusLeftDatasets
         },
         options: {
+            interaction: {
+                intersect: false,
+                mode: 'index',
+                axis: 'x'
+            },
             responsive: true,
             animation: false,
             plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function (context) {
+                            if (context.dataset.label === "Durchschnitts Kurve") {
+                                return `${context.dataset.label}: ${context.parsed.y}`
+                            }
+                            if (context.dataset.label == slowest) {
+                                return `Langsamste Kurve: ${context.parsed.y}`
+                            }
+                            if (context.dataset.label == fastest) {
+                                return `Schnellste Kurve: ${context.parsed.y}`
+                            }
+                        }
+                    }
+                },
                 title: {
                     display: true,
-                    text: 'Nucleus left chart',
+                    text: 'Verbleibende Kerne Diagram',
                     font: {
                         size: 16,
                     },
@@ -173,7 +222,7 @@ function showChart() {
                     display: true,
                     title: {
                         display: true,
-                        text: 'Run',
+                        text: 'Durchlauf',
                         font: {
                             size: 14,
                         },
@@ -184,7 +233,7 @@ function showChart() {
                     display: true,
                     title: {
                         display: true,
-                        text: 'Nucleus left',
+                        text: 'Kerne verbleibend',
                         font: {
                             size: 14,
                         },
@@ -194,6 +243,50 @@ function showChart() {
         },
         plugins: [htmlLegendPlugin],
     });
+
+    showTable()
+}
+
+function showTable() {
+    let first = $("#tables div table .first")[0]
+    $("#tables div table").children().remove()
+    $("#tables div table").append(first)
+
+    let slowestTable = $("#tables #slowest table");
+    for (let round in nucleusLeftArray[slowest - 1]) {
+        let curDecay = nucleusLeftArray[slowest - 1][0].y - nucleusLeftArray[slowest - 1][round].y
+        curDecay -= (round == 0) ? 0 : nucleusLeftArray[slowest - 1][0].y - nucleusLeftArray[slowest - 1][round-1].y
+        let tr = $(slowestTable).append("<tr></tr>")
+        $(tr).append(`<td>${round}</td>`)
+        $(tr).append(`<td>${curDecay}</td>`)
+        $(tr).append(`<td>${nucleusLeftArray[slowest - 1][0].y - nucleusLeftArray[slowest - 1][round].y}</td>`)
+        $(tr).append(`<td>${nucleusLeftArray[slowest - 1][round].y}</td>`)
+    }
+
+
+    let averageTable = $("#tables #average table");
+    for (let round in nucleusLeftAverageArray) {
+        let curDecay = nucleusLeftAverageArray[0].y - nucleusLeftAverageArray[round].y
+        curDecay -= (round == 0) ? 0 : nucleusLeftAverageArray[0].y - nucleusLeftAverageArray[round-1].y
+        let tr = $(averageTable).append("<tr></tr>")
+        $(tr).append(`<td>${round}</td>`)
+        $(tr).append(`<td>${curDecay}</td>`)
+        $(tr).append(`<td>${nucleusLeftAverageArray[0].y - nucleusLeftAverageArray[round].y}</td>`)
+        $(tr).append(`<td>${nucleusLeftAverageArray[round].y}</td>`)
+    }
+
+    let fastestTable = $("#tables #fastest table");
+    for (let round in nucleusLeftArray[fastest - 1]) {
+        let curDecay = nucleusLeftArray[fastest - 1][0].y - nucleusLeftArray[fastest - 1][round].y
+        curDecay -= (round == 0) ? 0 : nucleusLeftArray[fastest - 1][0].y - nucleusLeftArray[fastest - 1][round-1].y
+        let tr = $(fastestTable).append("<tr></tr>")
+        $(tr).append(`<td>${round}</td>`)
+        $(tr).append(`<td>${curDecay}</td>`)
+        $(tr).append(`<td>${nucleusLeftArray[fastest - 1][0].y - nucleusLeftArray[fastest - 1][round].y}</td>`)
+        $(tr).append(`<td>${nucleusLeftArray[fastest - 1][round].y}</td>`)
+    }
+
+    $("#tables").css("display", "flex")
 }
 
 const htmlLegendPlugin = {
@@ -224,7 +317,7 @@ const htmlLegendPlugin = {
 
             $(li).append('<span></span>')
 
-            $(li).append(`<p>${((i < 1) ? item.text : "Other curves")}</p>`).css("text-decoration", item.hidden ? 'line-through' : '')
+            $(li).append(`<p>${((i < 1) ? item.text : "Andere Kurven")}</p>`).css("text-decoration", item.hidden ? 'line-through' : '')
 
             $(ul).append(li)
         }

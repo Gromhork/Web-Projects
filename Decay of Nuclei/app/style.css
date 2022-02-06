@@ -129,6 +129,39 @@ input {
     transform: translateY(25%);
 }
 
+#tables {
+    display: none;
+    margin-top: 50px;
+    justify-content: center;
+}
+
+#tables div {
+    margin: 10px
+}
+
+#tables h2 {
+    text-align: center;
+    margin: 5px;
+}
+
+#tables table {
+    background-color: #1a2125;
+}
+
+#tables table th {
+    background: #373b42;
+    text-align: center;
+    font-size: 14px;
+    padding: 10px;
+}
+
+#tables table td {
+    background: #2a2e35;
+    text-align: center;
+    color: #b2becd;
+    padding: 5px;
+}
+
 @media (max-width: 1250px) {
     #container {
         width: 62%;

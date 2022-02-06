@@ -3,10 +3,10 @@
 <html lang="en">
 
 <head>
-    <title>Decay of Nuclei</title>
+    <title>Zerfall von Kernen</title>
     <link rel="icon" type="image/png" href="../images/Icon.png">
     <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="main.js"></script>
@@ -14,42 +14,42 @@
 
 <body>
 <div id="container">
-    <h1 id="title">Decay of Nuclei</h1>
+    <h1 id="title">Zerfall von Kernen</h1>
     <div id="first-line">
         <div id="settings">
             <div>
-                <label for="inputProbability">Probability of decay (1:x):</label>
+                <label for="inputProbability">Wahrscheinlichkeit des Zerfalls (1:x):</label>
                 <input type="number" id="inputProbability" value="6">
             </div>
             <div>
-                <label for="inputNucleusQuantity">Number of nucleus:</label>
+                <label for="inputNucleusQuantity">Anzahl der Kerne:</label>
                 <input type="number" id="inputNucleusQuantity" value="500" min="5">
             </div>
             <div>
-                <label for="inputRuns">Runs:</label>
+                <label for="inputRuns">Durchläufe:</label>
                 <input type="number" id="inputRuns" value="100">
             </div>
             <div id="axis">
                 <div>
-                    <label for="inputX">Max x:</label>
+                    <label for="inputX">X-Achse:</label>
                     <input type="number" value="0" min="0" id="inputX">
                 </div>
                 <div>
-                    <label for="inputY">Max y:</label>
+                    <label for="inputY">Y-Achse:</label>
                     <input type="number" value="0" min="0" id="inputY">
                 </div>
             </div>
             <div id="last">
-                <label for="inputPoint">Show points:</label>
+                <label for="inputPoint">Zeige Punkte:</label>
                 <input type="checkbox" id="inputPoint" onclick="showPoints()">
             </div>
         </div>
 
         <div>
-            <input type="button" id="calculate" value="Click to calculate">
-            <input type="button" id="stop" value="Hold to stop">
+            <input type="button" id="calculate" value="Klicke zum berechnen">
+            <input type="button" id="stop" value="Halte zum stoppen">
             <div id="progress">
-                <label>Progress:</label>
+                <label>Fortschritt:</label>
                 <div id="bar">
                     <div><p>0%</p></div>
                 </div>
@@ -61,6 +61,31 @@
     </div>
     <div>
         <canvas id="average-diagram" class="diagram"></canvas>
+    </div>
+    <div id="tables">
+        <div id="slowest">
+            <h2>Langsamster Zerfall</h2>
+            <table>
+                <tr class="first">
+                    <th>Durchlauf n</th>
+                    <th>Zerfallene Kerne</th>
+                    <th>Zerfallene Kerne (Insgesamt)</th>
+                    <th>nicht zerfallene Kerne N</th>
+                </tr>
+            </table>
+        </div>
+        <div id="average">
+            <h2>Durchschnittlicher Zerfall</h2>
+            <table>
+
+            </table>
+        </div>
+        <div id="fastest">
+            <h2>Schnellster Zerfall</h2>
+            <table>
+
+            </table>
+        </div>
     </div>
 </div>
 <script src="main.js"></script>
