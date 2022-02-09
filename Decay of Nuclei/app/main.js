@@ -246,14 +246,13 @@ function showChart() {
 
     showTable()
 }
-
+let first = $("#tables div table .first")[0]
 function showTable() {
     if (nucleusLeftAverageArray.length > 100) {
         $("#tables div table").children().remove()
         return
     }
 
-    let first = $("#tables div table .first")[0]
     $("#tables div table").children().remove()
     $("#tables div table").append(first)
 
