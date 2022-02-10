@@ -7,6 +7,7 @@ let x = null
 let y = null
 let slowest
 let fastest
+let first
 
 function calculate() {
     if (running === true) {
@@ -246,7 +247,7 @@ function showChart() {
 
     showTable()
 }
-let first = $("#tables div table .first")[0]
+
 function showTable() {
     if (nucleusLeftAverageArray.length > 100) {
         $("#tables div table").children().remove()
@@ -330,6 +331,7 @@ const htmlLegendPlugin = {
 };
 
 $(document).ready(function () {
+    first = $("#tables div table .first")[0]
     $("#stop").hide()
     $("#calculate").on("click", function () {
         $(this).hide()
